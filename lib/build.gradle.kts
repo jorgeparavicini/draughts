@@ -4,6 +4,9 @@ plugins {
     `maven-publish`
 }
 
+group = "com.jorgeparavicini"
+version = "1.0.0"
+
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
@@ -33,6 +36,7 @@ publishing {
     }
     publications {
         register<MavenPublication>("gpr") {
+            artifactId = "draughts"
             from(components["java"])
         }
     }
