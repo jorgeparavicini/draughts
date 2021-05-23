@@ -4,7 +4,10 @@ import com.jorgeparavicini.draughts.model.core.Move
 import com.jorgeparavicini.draughts.model.enums.Player
 
 abstract class Controller {
-    abstract suspend fun getMove(player: Player): Move
+    lateinit var player: Player
+        internal set
 
-    abstract fun illegalMove(move: Move, message: String?)
+    abstract suspend fun getMove(): Move
+
+    open fun illegalMove(move: Move, message: String?) {}
 }

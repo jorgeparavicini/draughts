@@ -33,6 +33,11 @@ class Draughts(
     val currentController: Controller
         get() = if (currentPlayer == Player.BLACK) blackController else whiteController
 
+    init {
+        blackController.player = Player.BLACK
+        whiteController.player = Player.WHITE
+    }
+
     fun reset() {
         turn = 0
         field.reset()
@@ -55,7 +60,7 @@ class Draughts(
 
         while (true) {
             if (isGameOver) break
-            val move = controller.getMove(currentPlayer)
+            val move = controller.getMove()
             try {
                 if (!field.executeMove(move, currentPlayer)) break
             } catch (e: IllegalMoveException) {
