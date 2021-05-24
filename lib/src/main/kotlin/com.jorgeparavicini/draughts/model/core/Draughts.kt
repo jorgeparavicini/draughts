@@ -7,7 +7,7 @@ import com.jorgeparavicini.draughts.model.exceptions.IllegalMoveException
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger { }
-typealias MoveExecutedHandler = (Move) -> Unit
+typealias MoveExecutedHandler = (Vector2, Vector2, Player) -> Unit
 
 class Draughts(
     private val blackController: Controller,
@@ -81,8 +81,9 @@ class Draughts(
             if (isGameOver) break
             val move = controller.getMove()
             try {
+                val from = move.piece.position
                 val didEat = field.executeMove(move, currentPlayer)
-                onMoveExecutedHandler?.invoke(move)
+                onMoveExecutedHandler?.invoke(from, move.destination, move.piece.player)
                 if (!didEat) break
             } catch (e: IllegalMoveException) {
                 logger.trace("Move was not allowed: $move")
