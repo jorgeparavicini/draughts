@@ -23,9 +23,6 @@ class Draughts(
     val isGameOver: Boolean
         get() = this.field.isGameOver
 
-    var hasStarted: Boolean = false
-        private set
-
     var turn: Int = 0
         private set
 
@@ -49,12 +46,6 @@ class Draughts(
     fun reset() {
         turn = 0
         field.reset()
-        hasStarted = false
-    }
-
-    fun startGame() {
-        if (hasStarted) throw IllegalStateException("Game already started")
-        hasStarted = true
     }
 
     fun setOnMoveExecutedHandler(handler: MoveExecutedHandler) {
