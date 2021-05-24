@@ -151,11 +151,11 @@ class Field(private val size: FieldSize = FieldSize.SIZE_8x8) {
     }
 
     fun getPiece(position: Vector2): Piece? {
-        return pieces.find { it.position == position }
+        return pieces.find { it.position == position && !it.eaten }
     }
 
     fun getPieces(player: Player): List<Piece> {
-        return pieces.filter { it.player == player}
+        return pieces.filter { it.player == player && !it.eaten }
     }
 
     override fun toString(): String {

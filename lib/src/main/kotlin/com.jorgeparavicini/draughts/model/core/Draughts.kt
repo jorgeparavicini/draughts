@@ -6,12 +6,13 @@ import com.jorgeparavicini.draughts.model.enums.Player
 import com.jorgeparavicini.draughts.model.exceptions.IllegalMoveException
 import mu.KotlinLogging
 
-private val logger = KotlinLogging.logger {  }
+private val logger = KotlinLogging.logger { }
 
 class Draughts(
     private val blackController: Controller,
     private val whiteController: Controller,
-    size: FieldSize = FieldSize.SIZE_8x8
+    size: FieldSize = FieldSize.SIZE_8x8,
+    initialMoves: List<Move>? = null
 ) {
     val field = Field(size)
 
@@ -36,6 +37,10 @@ class Draughts(
     init {
         blackController.player = Player.BLACK
         whiteController.player = Player.WHITE
+
+        initialMoves?.forEach { move ->
+            nextMove(move)
+        }
     }
 
     fun reset() {
@@ -53,6 +58,13 @@ class Draughts(
         if (isGameOver) throw IllegalStateException("Game is already over")
         playTurn(currentController)
         turn += 1
+    }
+
+    private fun nextMove(move: Move) {
+        if (isGameOver) throw IllegalStateException("Game is already over")
+        if (!field.executeMove(move, currentPlayer)) {
+            turn += 1
+        }
     }
 
     private suspend fun playTurn(controller: Controller) {
