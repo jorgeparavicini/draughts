@@ -6,19 +6,19 @@ import com.jorgeparavicini.draughts.model.enums.Player
 import com.jorgeparavicini.draughts.model.exceptions.IllegalMoveException
 import mu.KotlinLogging
 
-typealias GameOverHandler = (Player) -> Unit
-typealias GameResetHandler = () -> Unit
+public typealias GameOverHandler = (Player) -> Unit
+public typealias GameResetHandler = () -> Unit
 
 private val logger = KotlinLogging.logger { }
 
-class Field(private val size: FieldSize = FieldSize.SIZE_8x8) {
+public class Field(private val size: FieldSize = FieldSize.SMALL) {
     internal var winner: Player? = null
         private set
 
     internal val isGameOver: Boolean
         get() = winner != null
 
-    val fieldSize: Int
+    public val fieldSize: Int
         get() = size.size
 
     private val numberOfPieces: Int = fieldSize * (fieldSize - 2) / 2
@@ -40,11 +40,11 @@ class Field(private val size: FieldSize = FieldSize.SIZE_8x8) {
         reset()
     }
 
-    fun setOnGameOverHandler(handler: GameOverHandler) {
+    public fun setOnGameOverHandler(handler: GameOverHandler) {
         onGameOver = handler
     }
 
-    fun setOnGameResetHandler(handler: GameResetHandler) {
+    public fun setOnGameResetHandler(handler: GameResetHandler) {
         onGameReset = handler
     }
 
@@ -93,17 +93,17 @@ class Field(private val size: FieldSize = FieldSize.SIZE_8x8) {
 
     private fun updateGameOver() {
         if (getPieces(Player.BLACK).count() == 0) {
-            winner = Player.BLACK
-            onGameOver?.invoke(winner!!)
-            logger.trace("Black won")
-        } else if (getPieces(Player.WHITE).count() == 0) {
             winner = Player.WHITE
             onGameOver?.invoke(winner!!)
             logger.trace("White won")
+        } else if (getPieces(Player.WHITE).count() == 0) {
+            winner = Player.BLACK
+            onGameOver?.invoke(winner!!)
+            logger.trace("BLACK won")
         }
     }
 
-    fun getPossibleMoves(player: Player): List<Move> {
+    public fun getPossibleMoves(player: Player): List<Move> {
         val pieces = getPieces(player)
         var moves = pieces.map { getPossibleMoves(it) }.flatten()
 
@@ -150,11 +150,11 @@ class Field(private val size: FieldSize = FieldSize.SIZE_8x8) {
         return MoveType.VALID
     }
 
-    fun getPiece(position: Vector2): Piece? {
+    public fun getPiece(position: Vector2): Piece? {
         return pieces.find { it.position == position && !it.eaten }
     }
 
-    fun getPieces(player: Player): List<Piece> {
+    public fun getPieces(player: Player): List<Piece> {
         return pieces.filter { it.player == player && !it.eaten }
     }
 

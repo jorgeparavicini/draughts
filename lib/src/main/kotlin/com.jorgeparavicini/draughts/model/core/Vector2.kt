@@ -3,7 +3,7 @@ package com.jorgeparavicini.draughts.model.core
 import com.jorgeparavicini.draughts.model.enums.Direction
 import kotlin.math.abs
 
-data class Vector2(val x: Int, val y: Int) : Comparable<Vector2>, Iterable<Vector2> {
+public data class Vector2(val x: Int, val y: Int) : Comparable<Vector2>, Iterable<Vector2> {
 
     val diagonalMagnitude: Int
         get() {
@@ -34,19 +34,19 @@ data class Vector2(val x: Int, val y: Int) : Comparable<Vector2>, Iterable<Vecto
     val min: Int
         get() = kotlin.math.min(x, y)
 
-    operator fun plus(other: Vector2): Vector2 {
+    public operator fun plus(other: Vector2): Vector2 {
         return Vector2(x + other.x, y + other.y)
     }
 
-    operator fun minus(other: Vector2): Vector2 {
+    public operator fun minus(other: Vector2): Vector2 {
         return Vector2(x - other.x, y - other.y)
     }
 
-    operator fun times(scalar: Int): Vector2 {
+    public operator fun times(scalar: Int): Vector2 {
         return Vector2(x * scalar, y * scalar)
     }
 
-    operator fun rangeTo(other: Vector2) = Vector2Range(this, other)
+    public operator fun rangeTo(other: Vector2): Vector2Range = Vector2Range(this, other)
 
     override fun compareTo(other: Vector2): Int {
         return diagonalMagnitude.compareTo(other.diagonalMagnitude)
@@ -56,7 +56,7 @@ data class Vector2(val x: Int, val y: Int) : Comparable<Vector2>, Iterable<Vecto
         return Vector2Iterator(this, zero())
     }
 
-    fun getDiagonalPositions(bounds: Int): Set<Vector2> {
+    public fun getDiagonalPositions(bounds: Int): Set<Vector2> {
         val exclusiveBounds = bounds - 1
         val q1Min = kotlin.math.min(exclusiveBounds - x, exclusiveBounds - y)
         val q2Min = kotlin.math.min(x, exclusiveBounds - y)
@@ -72,7 +72,7 @@ data class Vector2(val x: Int, val y: Int) : Comparable<Vector2>, Iterable<Vecto
         )
     }
 
-    inner class Vector2Range(
+    public inner class Vector2Range(
         override val start: Vector2, override val endInclusive: Vector2
     ) : ClosedRange<Vector2>, Iterable<Vector2> {
         override fun iterator(): Iterator<Vector2> {
@@ -80,7 +80,7 @@ data class Vector2(val x: Int, val y: Int) : Comparable<Vector2>, Iterable<Vecto
         }
     }
 
-    inner class Vector2Iterator(
+    public inner class Vector2Iterator(
         private var value: Vector2, private val endInclusive: Vector2
     ) : Iterator<Vector2> {
         private val initialDirection = (endInclusive - value).direction
@@ -99,9 +99,9 @@ data class Vector2(val x: Int, val y: Int) : Comparable<Vector2>, Iterable<Vecto
         }
     }
 
-    companion object {
-        fun zero() = Vector2(0, 0)
+    public companion object {
+        public fun zero(): Vector2 = Vector2(0, 0)
 
-        fun one() = Vector2(1, 1)
+        public fun one(): Vector2 = Vector2(1, 1)
     }
 }

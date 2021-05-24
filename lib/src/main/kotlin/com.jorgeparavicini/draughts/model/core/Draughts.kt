@@ -3,33 +3,32 @@ package com.jorgeparavicini.draughts.model.core
 import com.jorgeparavicini.draughts.controllers.Controller
 import com.jorgeparavicini.draughts.model.enums.FieldSize
 import com.jorgeparavicini.draughts.model.enums.Player
-import com.jorgeparavicini.draughts.model.exceptions.IllegalMoveException
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger { }
-typealias MoveExecutedHandler = (Vector2, Vector2, Player) -> Unit
+public typealias MoveExecutedHandler = (from: Vector2, to: Vector2, player: Player, didEat: Boolean) -> Unit
 
-class Draughts(
+public class Draughts(
     private val blackController: Controller,
     private val whiteController: Controller,
-    size: FieldSize = FieldSize.SIZE_8x8,
+    size: FieldSize = FieldSize.SMALL,
     initialMoves: List<Move>? = null
 ) {
-    val field = Field(size)
+    public val field: Field = Field(size)
 
-    val winner: Player?
+    public val winner: Player?
         get() = this.field.winner
 
-    val isGameOver: Boolean
+    public val isGameOver: Boolean
         get() = this.field.isGameOver
 
-    var turn: Int = 0
+    public var turn: Int = 0
         private set
 
-    val currentPlayer: Player
+    public val currentPlayer: Player
         get() = if (turn % 2 == 0) Player.BLACK else Player.WHITE
 
-    val currentController: Controller
+    public val currentController: Controller
         get() = if (currentPlayer == Player.BLACK) blackController else whiteController
 
     private var onMoveExecutedHandler: MoveExecutedHandler? = null
@@ -43,43 +42,31 @@ class Draughts(
         }
     }
 
-    fun reset() {
+    public fun reset() {
         turn = 0
         field.reset()
     }
 
-    fun setOnMoveExecutedHandler(handler: MoveExecutedHandler) {
+    public fun setOnMoveExecutedHandler(handler: MoveExecutedHandler) {
         onMoveExecutedHandler = handler
     }
 
-    suspend fun nextTurn() {
+    public suspend fun nextTurn() {
         if (isGameOver) throw IllegalStateException("Game is already over")
-        playTurn(currentController)
-        turn += 1
-    }
+        val move = currentController.getMove()
+        val from = move.piece.position
+        val didEat = field.executeMove(move, currentPlayer)
+        onMoveExecutedHandler?.invoke(from, move.destination, move.piece.player, didEat)
 
-    fun nextMove(move: Move) {
-        if (isGameOver) throw IllegalStateException("Game is already over")
-        if (!field.executeMove(move, currentPlayer)) {
+        if (!didEat) {
             turn += 1
         }
     }
 
-    private suspend fun playTurn(controller: Controller) {
+    public fun nextMove(move: Move) {
         if (isGameOver) throw IllegalStateException("Game is already over")
-
-        while (true) {
-            if (isGameOver) break
-            val move = controller.getMove()
-            try {
-                val from = move.piece.position
-                val didEat = field.executeMove(move, currentPlayer)
-                onMoveExecutedHandler?.invoke(from, move.destination, move.piece.player)
-                if (!didEat) break
-            } catch (e: IllegalMoveException) {
-                logger.trace("Move was not allowed: $move")
-                controller.illegalMove(move, e.message)
-            }
+        if (!field.executeMove(move, currentPlayer)) {
+            turn += 1
         }
     }
 }

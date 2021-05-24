@@ -2,15 +2,15 @@ package com.jorgeparavicini.draughts.model.core
 
 import com.jorgeparavicini.draughts.model.enums.Player
 
-typealias PieceMovedHandler = (Vector2, Vector2) -> Unit
-typealias PieceEatenHandler = () -> Unit
-typealias PiecePromotedListener = () -> Unit
+public typealias PieceMovedHandler = (Vector2, Vector2) -> Unit
+public typealias PieceEatenHandler = () -> Unit
+public typealias PiecePromotedListener = () -> Unit
 
-open class Piece(
-    val player: Player,
+public open class Piece(
+    public val player: Player,
     private val initialPosition: Vector2
 ) {
-    var isDraught: Boolean = false
+    public var isDraught: Boolean = false
         internal set(value) {
             if (field == value) return
             field = value
@@ -19,7 +19,7 @@ open class Piece(
             }
         }
 
-    var position: Vector2 = initialPosition
+    public var position: Vector2 = initialPosition
         internal set(value) {
             val old = field
             field = value
@@ -28,7 +28,7 @@ open class Piece(
             }
         }
 
-    var eaten: Boolean = false
+    public var eaten: Boolean = false
         internal set(value) {
             if (field == value) return
             field = value
@@ -43,15 +43,15 @@ open class Piece(
 
     private var onPiecePromoted: PiecePromotedListener? = null
 
-    fun setOnPieceMovedHandler(handler: PieceMovedHandler) {
+    public fun setOnPieceMovedHandler(handler: PieceMovedHandler) {
         onPieceMoved = handler
     }
 
-    fun setOnPieceEatenHandler(handler: PieceEatenHandler) {
+    public fun setOnPieceEatenHandler(handler: PieceEatenHandler) {
         onPieceEaten = handler
     }
 
-    fun setOnPiecePromotedHandler(handler: PiecePromotedListener) {
+    public fun setOnPiecePromotedHandler(handler: PiecePromotedListener) {
         onPiecePromoted = handler
     }
 
@@ -62,6 +62,6 @@ open class Piece(
     }
 
     override fun toString(): String {
-        return player.toString()
+        return player.icon
     }
 }

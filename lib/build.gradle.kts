@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.jorgeparavicini"
-version = "1.0.11"
+version = "1.1.0"
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -21,6 +21,10 @@ dependencies {
 
     // Use the Kotlin test library.
     testImplementation(kotlin("test"))
+}
+
+kotlin {
+    explicitApi()
 }
 
 publishing {
