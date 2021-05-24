@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.jorgeparavicini"
-version = "1.1.0"
+version = "1.1.1"
 
 repositories {
     // Use Maven Central for resolving dependencies.

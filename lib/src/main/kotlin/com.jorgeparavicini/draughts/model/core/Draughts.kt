@@ -3,6 +3,7 @@ package com.jorgeparavicini.draughts.model.core
 import com.jorgeparavicini.draughts.controllers.Controller
 import com.jorgeparavicini.draughts.model.enums.FieldSize
 import com.jorgeparavicini.draughts.model.enums.Player
+import com.jorgeparavicini.draughts.model.exceptions.IllegalMoveException
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger { }
@@ -53,13 +54,20 @@ public class Draughts(
 
     public suspend fun nextTurn() {
         if (isGameOver) throw IllegalStateException("Game is already over")
-        val move = currentController.getMove()
-        val from = move.piece.position
-        val didEat = field.executeMove(move, currentPlayer)
-        onMoveExecutedHandler?.invoke(from, move.destination, move.piece.player, didEat)
-
-        if (!didEat) {
-            turn += 1
+        while (true) {
+            val move = currentController.getMove()
+            val from = move.piece.position
+            val didEat = try {
+                field.executeMove(move, currentPlayer)
+            } catch (e: IllegalMoveException) {
+                currentController.illegalMove(move, e.message)
+                continue
+            }
+            onMoveExecutedHandler?.invoke(from, move.destination, move.piece.player, didEat)
+            if (!didEat) {
+                turn += 1
+            }
+            return
         }
     }
 
