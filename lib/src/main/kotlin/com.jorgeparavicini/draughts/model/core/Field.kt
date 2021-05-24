@@ -138,10 +138,12 @@ class Field(private val size: FieldSize = FieldSize.SIZE_8x8) {
                     move.piece.player == Player.WHITE && (move.destination - move.piece.position).y <= 0)
         ) return MoveType.INVALID
 
-        if (getPiece(move.destination) != null) return MoveType.INVALID
+        val destinationPiece = getPiece(move.destination)
+        if (destinationPiece != null && !destinationPiece.eaten) return MoveType.INVALID
         if (magnitude > 2) return MoveType.INVALID
         if (magnitude == 2) {
             val pieceBetween = getPiece(pointsBetween.first()) ?: return MoveType.INVALID
+            if (pieceBetween.eaten) return MoveType.INVALID
             if (pieceBetween.player == move.piece.player) return MoveType.INVALID
             return MoveType.VALID_EAT
         }
