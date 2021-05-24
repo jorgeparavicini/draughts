@@ -67,7 +67,7 @@ class Draughts(
         turn += 1
     }
 
-    private fun nextMove(move: Move) {
+    fun nextMove(move: Move) {
         if (isGameOver) throw IllegalStateException("Game is already over")
         if (!field.executeMove(move, currentPlayer)) {
             turn += 1
